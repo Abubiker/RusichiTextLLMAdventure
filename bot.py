@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, CommandStart
 from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup, ReplyKeyboardRemove
 
-from src.config import BOT_TOKEN, OLLAMA_FALLBACK_MODELS, OLLAMA_MODEL
+from src.config import BOT_TOKEN, OPENROUTER_FALLBACK_MODELS, OPENROUTER_MODEL
 from src.db import get_state, init_db, set_state
 from src.game.engine import build_intro, process_action
 from src.game.state import (
@@ -75,8 +75,8 @@ def _options_keyboard(options: list[str]) -> Optional[ReplyKeyboardMarkup]:
 
 
 def _available_models() -> list[str]:
-    models = [OLLAMA_MODEL]
-    for model in OLLAMA_FALLBACK_MODELS:
+    models = [OPENROUTER_MODEL]
+    for model in OPENROUTER_FALLBACK_MODELS:
         if model and model not in models:
             models.append(model)
     return models
@@ -207,7 +207,7 @@ async def main() -> None:
         models = _available_models()
         parts = (message.text or "").split(maxsplit=1)
         if len(parts) == 1:
-            current = data.get("llm_model") or OLLAMA_MODEL
+            current = data.get("llm_model") or OPENROUTER_MODEL
             lines = [f"Текущая модель: {current}", "Доступные модели:"]
             for i, model in enumerate(models, start=1):
                 lines.append(f"{i}. {model}")
