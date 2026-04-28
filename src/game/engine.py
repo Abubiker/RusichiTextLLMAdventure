@@ -11,10 +11,10 @@ from ..config import (
     CONTEXT_TURNS,
     LLM_MIN_NARRATIVE_CHARS,
     MAX_OPTIONS,
-    OLLAMA_FALLBACK_MODELS,
-    OLLAMA_MODEL,
+    OPENROUTER_FALLBACK_MODELS,
+    OPENROUTER_MODEL,
 )
-from ..llm.ollama_client import chat, extract_json
+from ..llm.openrouter_client import chat, extract_json
 
 STAT_LABELS = {
     "strength": "Сила",
@@ -541,8 +541,8 @@ def create_enemy(character: Dict[str, Any]) -> Dict[str, Any]:
 
 def _llm_models(data: Dict[str, Any]) -> List[str]:
     override = data.get("llm_model")
-    models = [override or OLLAMA_MODEL]
-    for model in OLLAMA_FALLBACK_MODELS:
+    models = [override or OPENROUTER_MODEL]
+    for model in OPENROUTER_FALLBACK_MODELS:
         if model and model not in models:
             models.append(model)
     return models
@@ -1252,6 +1252,7 @@ def process_action(
     success = roll >= difficulty
 
     summary = _context_summary(context, data)
+    memory = _scene_memory_text(data)
     special = character["special"]
     items = ", ".join(character.get("items", [])) or "ничего"
     capacity = inventory_capacity(character)
